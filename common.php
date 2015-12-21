@@ -23,23 +23,60 @@ if(!function_exists('loadClass'))
             return $commonClasses[$class];
         }
 
+        $filePath = '';
         foreach(array(INCLUDE_DIR,SRC_DIR) as $path)
         {
             if(file_exists($path.'/'.$class.'.php'))
             {
-                if(class_exists($class,false) === FALSE)
-                {
-                    require_once $path.'/'.$class.'.php';
-                }
+                $filePath = $path;
                 break;
             }
         }
 
-        $commonClasses[$class] = isset($param) ? new $class($param) : new $class();
-        return $commonClasses[$class];
+        if(!isLoadFile($class) && !empty($filePath) && class_exists($class,false) === FALSE)
+        {
+             require_once $filePath.'/'.$class.'.php';
+        }
+
+        if(INCLUDE_DIR === $filePath)
+        {
+            $commonClasses[$class] = isset($param) ? new $class($param) : new $class();
+            return $commonClasses[$class];
+        }
+        else if(SRC_DIR == $filePath)
+        {
+            return isset($param) ? new $class($param) : new $class();
+        }
+        return FALSE;
     }
 }
 
+/*
+ * 判断是否已加载该类所在文件
+ *
+ * @param string class 类名称
+ * @return boolean
+ */
+if(!function_exists('isLoadFile'))
+{
+    function isLoadFile($class = '')
+    {
+        static $commonIsLoaded = array();
+        if(empty($class))
+        {
+            return FALSE;
+        }
+        if(isset($commonIsLoaded[$class]))
+        {
+            return TRUE;
+        }
+        else
+        {
+            $commonIsLoaded[$class] = 1;
+            return FALSE;
+        }
+    }
+}
 
 /*
  * 从数组构建键值对
