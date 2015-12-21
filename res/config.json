@@ -1,0 +1,10 @@
+{
+  "zhAccount" : "416225984@qq.com",
+  "zhPassword": "WWWSGQCOM",
+
+  "mysqlHost" : "127.0.0.1",
+  "mysqlPort" : 3306,
+  "mysqlAccount" : "root",
+  "mysqlPassword" : "123456",
+  "mysqlDBName" : "zhihu"
+}
