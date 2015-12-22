@@ -33,7 +33,7 @@ if(!function_exists('loadClass'))
             }
         }
 
-        if(!isLoadFile($class) && !empty($filePath) && class_exists($class,false) === FALSE)
+        if(!empty($filePath) && !isLoadFile($class) && class_exists($class,false) === FALSE)
         {
              require_once $filePath.'/'.$class.'.php';
         }
