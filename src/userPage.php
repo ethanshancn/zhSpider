@@ -37,11 +37,11 @@ class userPage
             return FALSE;
         }
 
-        if($this->getUserInfo($result['content']))
+        if($userInf = $this->getUserInfo($result['content']))
         {
             //若未成功插入用户数据(包含插入失败以及用户已存在两种情况),则不进行如下操作
+            $this->getUserAnswer($userInf['totalAnswer']);
             //$this->getUserFollowee();
-            //$this->getUserAnswer();
         }
 
     }
@@ -62,7 +62,7 @@ class userPage
         //用户不存在时进行插入
         if($this->dbModel->checkUserIsExist($this->hashId) === FALSE)
         {
-            $userInfo = array();
+            $userInfo = $arrReturn = array();
             $infoDiv = $webSite->find("div.zm-profile-header",0);
 
             $userInfo['sUserName'] = ($tmp = $infoDiv->find("a.name",0))? $tmp->getPlainText() : '';
@@ -76,10 +76,14 @@ class userPage
             $userInfo['sDescription'] = (($tmp = $infoDiv->find("span.description",0)) && ($tmp2 = $tmp->firstChild())) ? $tmp2->getPlainText() : '';
             $userInfo['iAgree'] = (($tmp = $infoDiv->find("span.zm-profile-header-user-agree",0)) && ($tmp2 = $tmp->find("strong",0))) ? $tmp2->getPlainText() : '';
             $userInfo['iThanks'] = (($tmp = $infoDiv->find("span.zm-profile-header-user-thanks",0)) && ($tmp2 = $tmp->find("strong",0))) ? $tmp2->getPlainText() : '';
+
+            $arrReturn = $userInfo;
+            $arrReturn['totalAnswer'] = (($tmp = $infoDiv->find("div.profile-navbar",0)->getChild(2)) && ($tmp2 = $tmp->find("span",0))) ? $tmp2->getPlainText() : 0;
+
             unset($infoDiv,$webSite);
 
             $this->dbModel->addUserInf($userInfo);
-            return TRUE;
+            return $arrReturn;
         }
         else
         {
@@ -87,22 +91,16 @@ class userPage
         }
     }
 
-    public function getUserAnswer()
+    public function getUserAnswer($totalNum = 0)
     {
-        /********************** 测试信息 ******************************/
-        $userPage = 'https://www.zhihu.com/people/qingwan/followees';
-        $hashId = '8b7b027115602273520d871daa3dc475';
-        $totalAnswer = 109;
-        /********************** 测试信息 ******************************/
-
-        $userPage = substr($userPage,0,strrpos($userPage,'/') + 1).'answers';
-        $answer = loadClass('answer',array('answerUrl'=>$userPage,'hashId'=>$hashId,'totalAnswer'=>$totalAnswer));
+        $userPage = substr($this->webUrl,0,strrpos($userPage,'/') + 1).'answers';
+        $answer = loadClass('answer',array('answerUrl'=>$userPage,'hashId'=>$this->hashId,'totalAnswer'=>$totalNum));
 
     }
 
     public function getUserFollowee()
     {
-        $followees = new followees();
+        $followees = loadClass('followees');
         $followees->startGet($this->hashId);
     }
 

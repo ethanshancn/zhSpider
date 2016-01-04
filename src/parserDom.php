@@ -169,7 +169,6 @@ class parserDom {
         $doc->appendChild($doc->importNode($this->node, true));
         return $doc->saveHTML($doc);
     }
-
     /**
      * 获取第一子元素
      * @return null|parserDom
@@ -188,7 +187,6 @@ class parserDom {
             return NULL;
         }
     }
-
     /**
      * 获取下一兄弟元素
      * @return null|parserDom
@@ -206,6 +204,64 @@ class parserDom {
         }else{
             return NULL;
         }
+    }
+    /**
+     * 获取用户子元素列表,index从0开始
+     * @param int $index
+     * @param DOMNode $node
+     * @return null|parserDom
+     */
+    public function getChild($index, $node = NULL)
+    {
+        if($node === NULL){
+            $node = $this->node;
+        }
+        if($node->childNodes->length == 0)
+        {
+            return NULL;
+        }
+        $index = intval($index);
+        $arrList = array();
+        for($i = 0; $i < $node->childNodes->length; $i ++)
+        {
+            if($node->childNodes->item($i)->nodeType !== XML_TEXT_NODE)
+            {
+                $arrList[] = $node->childNodes->item($i);
+            }
+        }
+        if($index < count($arrList))
+        {
+            return new self($arrList[$index]);
+        }
+        else
+        {
+            return new self($arrList[0]);
+        }
+    }
+
+    /**
+     * 获取用户子元素列表
+     * @param DOMNode $node
+     * @return array|null
+     */
+    public function getChildList($node = NULL)
+    {
+        if($node === NULL){
+            $node = $this->node;
+        }
+        if($node->childNodes->length == 0)
+        {
+            return NULL;
+        }
+        $arrList = array();
+        for($i = 0; $i < $node->childNodes->length; $i ++)
+        {
+            if($node->childNodes->item($i)->nodeType !== XML_TEXT_NODE)
+            {
+                $arrList[] = new self($node->childNodes->item($i));
+            }
+        }
+        return $arrList;
     }
     /**
      * 获取html的元属值
