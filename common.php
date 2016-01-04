@@ -17,6 +17,12 @@ if(!function_exists('loadClass'))
 {
     function loadClass($class, $param = NULL)
     {
+        if(!is_string($class))
+        {
+            //日志记录
+
+            exit(-3);
+        }
         static $commonClasses = array();
         if(isset($commonClasses[$class]))
         {
@@ -164,11 +170,7 @@ if(!function_exists('buildUpdateSql'))
 
         foreach($arrItem as $key => $val)
         {
-            if(mb_detect_encoding($val,array('ASCII','GB2312','GBK','UTF-8')) == 'ASCII')
-            {
-                $val = iconv('GBK','UTF-8//IGNORE',$val);
-            }
-            $arrItem[$key] = "{$key}='".trim($val)."'";
+            $arrItem[$key] = "{$key}='".addslashes(trim($val))."'";
         }
 
         return ' '.implode(',',$arrItem).' ';

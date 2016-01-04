@@ -34,7 +34,7 @@ class DB
     {
         try
         {
-            $arrResult = $this->dbConnect->query($strSql)->fetchAll(PDO::FETCH_ASSOC);
+            $arrResult = $this->dbConnect->query($strSql);
         }
         catch (PDOException $e)
         {
@@ -43,7 +43,8 @@ class DB
             echo $e->getMessage()."\n";
             exit(-3);
         }
-        return $arrResult;
+
+        return $arrResult->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function exec($strSql)

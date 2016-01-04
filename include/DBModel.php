@@ -25,12 +25,12 @@ class DBModel
         if($iLocalUserId !== FALSE && $iLocalUserId > 0)
         {
 
-            $strSql = "UPDATE tbuserinfo SET ".buildUpdateSql($arrUserInf)." WHERE iLocalUserId={$iLocalUserId}";
+            $strSql = "UPDATE tbUserInfo SET ".buildUpdateSql($arrUserInf)." WHERE iLocalUserId={$iLocalUserId}";
         }
         else
         {
             $arrUserInf['dtAddTime'] = $arrUserInf['dtModifyTime'];
-            $strSql = "INSERT INTO tbuserinfo SET ".buildUpdateSql($arrUserInf);
+            $strSql = "INSERT INTO tbUserInfo SET ".buildUpdateSql($arrUserInf);
         }
         return $this->dbConnect->exec($strSql);
     }
@@ -48,12 +48,70 @@ class DBModel
             echo "参数错误\n";
             exit(-3);
         }
-        $strSql = "SELECT iLocalUserId FROM tbuserinfo WHERE sHashId='{$sHashId}' LIMIT 1";
+        $strSql = "SELECT iLocalUserId FROM tbUserInfo WHERE sHashId='{$sHashId}' LIMIT 1";
         $result = $this->dbConnect->query($strSql);
 
         if(is_array($result) && isset($result[0]) && isset($result[0]['iLocalUserId']))
         {
             return $result[0]['iLocalUserId'];
+        }
+        else
+        {
+            return FALSE;
+        }
+    }
+
+    public function addQuestion($arrInf)
+    {
+        if(!$arrInf['iQuestionId'] || !$arrInf['sContent'] || !$arrInf['sQuestionURL'])
+        {
+            return -1;
+        }
+
+        $strSql = "SELECT iLocalQuestionId FROM tbQuestion WHERE iQuestionId={$arrInf['iQuestionId']}";
+        $result = $this->dbConnect->query($strSql);
+
+        if(count($result) > 0)
+        {
+            return FALSE;
+        }
+
+        $arrInf['dtAddTime'] = time();
+        $strSql = "INSERT INTO tbQuestion SET ".buildUpdateSql($arrInf);
+        return $this->dbConnect->exec($strSql);
+    }
+
+    public function addAnswer($arrAnswerInf)
+    {
+        if(!is_array($arrAnswerInf))
+        {
+            return -1;
+        }
+        $iLocalAnswerId = $this->checkAnswerExist($arrAnswerInf['iAnswerId'], $arrAnswerInf['sHashId']);
+
+        if($iLocalAnswerId === FALSE)
+        {
+            $arrAnswerInf['dtAddTime'] = time();
+            $strSql = "INSERT INTO tbAnswer SET ".buildUpdateSql($arrAnswerInf);
+            return $this->dbConnect->exec($strSql);
+        }
+        return 0;
+    }
+
+    public function checkAnswerExist($iAnswerId,$sHashId)
+    {
+        if(!is_string($sHashId) || !$iAnswerId)
+        {
+            //记录日志
+
+            echo "参数错误\n";
+            exit(-3);
+        }
+        $strSql = "SELECT iLocalAnswerId FROM tbAnswer WHERE iAnswerId={$iAnswerId} AND sHashId='{$sHashId}' LIMIT 1";
+        $result = $this->dbConnect->query($strSql);
+        if(is_array($result) && isset($result[0]) && isset($result[0]['iLocalAnswerId']))
+        {
+            return $result[0]['iLocalAnswerId'];
         }
         else
         {

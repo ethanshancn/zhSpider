@@ -64,6 +64,7 @@ class userPage
         {
             $userInfo = $arrReturn = array();
             $infoDiv = $webSite->find("div.zm-profile-header",0);
+            unset($webSite);
 
             $userInfo['sUserName'] = ($tmp = $infoDiv->find("a.name",0))? $tmp->getPlainText() : '';
             $userInfo['sHashId'] = $this->hashId;
@@ -80,7 +81,7 @@ class userPage
             $arrReturn = $userInfo;
             $arrReturn['totalAnswer'] = (($tmp = $infoDiv->find("div.profile-navbar",0)->getChild(2)) && ($tmp2 = $tmp->find("span",0))) ? $tmp2->getPlainText() : 0;
 
-            unset($infoDiv,$webSite);
+            unset($infoDiv);
 
             $this->dbModel->addUserInf($userInfo);
             return $arrReturn;
@@ -93,9 +94,8 @@ class userPage
 
     public function getUserAnswer($totalNum = 0)
     {
-        $userPage = substr($this->webUrl,0,strrpos($userPage,'/') + 1).'answers';
-        $answer = loadClass('answer',array('answerUrl'=>$userPage,'hashId'=>$this->hashId,'totalAnswer'=>$totalNum));
-
+        $userPage = substr($this->webUrl,0,strrpos($this->webUrl,'/') + 1).'answers';
+        $answer = loadClass('answers',array('answerUrl'=>$userPage,'hashId'=>$this->hashId,'totalAnswer'=>$totalNum));
     }
 
     public function getUserFollowee()

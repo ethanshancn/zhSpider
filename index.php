@@ -24,5 +24,10 @@ $xsrf = $loginClass->doLogin();
 
 defined('XSRF') || define('XSRF',$xsrf);
 
-$index = loadClass('userPage',array('url' => 'https://www.zhihu.com/people/ethan_shan/followees'));
+$index = loadClass('userPage',array('url' => 'https://www.zhihu.com/people/excited-vczh/followees'));
 $index->startGet();
+
+//测试区域
+/*$answer = loadClass('answers',array('answerUrl'=>'https://www.zhihu.com/people/ethan_shan/answer','hashId'=>'aaa','totalAnswer'=>100));
+$answer->getList(1);*/
+//测试区域
