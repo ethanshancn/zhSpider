@@ -10,7 +10,7 @@ class userPage
     private $webUrl;
     private $curlObj;
     private $hashId;
-    private $dbObj;
+    private $dbModel;
 
     /*
      * $param中'url'必填，'hashId'选填
@@ -23,7 +23,7 @@ class userPage
         {
             $this->hashId = $param['hashId'];
         }
-        $this->dbObj = loadClass('DB');
+        $this->dbModel = loadClass('DBModel');
     }
 
     public function startGet()
@@ -71,11 +71,9 @@ class userPage
         $userInfo['sDescription'] = (($tmp = $infoDiv->find("span.description",0)) && ($tmp2 = $tmp->firstChild())) ? $tmp2->getPlainText() : '';
         $userInfo['iAgree'] = (($tmp = $infoDiv->find("span.zm-profile-header-user-agree",0)) && ($tmp2 = $tmp->find("strong",0))) ? $tmp2->getPlainText() : '';
         $userInfo['iThanks'] = (($tmp = $infoDiv->find("span.zm-profile-header-user-thanks",0)) && ($tmp2 = $tmp->find("strong",0))) ? $tmp2->getPlainText() : '';
-
         unset($infoDiv,$webSite);
 
-        print_r($userInfo);
-
+        $this->dbModel->addUserInf($userInfo);
     }
 
     public function getUserAnswer()

@@ -133,7 +133,7 @@ if(!function_exists('writeToFile'))
 }
 
 /*
- * 写入数据至文件(未增加权限检验等措施)
+ * 获取配置信息
  *
  * @param   string  配置索引
  * @return  string
@@ -144,5 +144,33 @@ if(!function_exists('getConfig'))
     {
         $configClass = loadClass('config');
         return $configClass->getConfig($key);
+    }
+}
+
+/*
+ * 从数组生成更新SQL更新语句
+ *
+ * @param   array   更新所有字段
+ * @return string
+ */
+if(!function_exists('buildUpdateSql'))
+{
+    function buildUpdateSql($arrItem)
+    {
+        if(!is_array($arrItem))
+        {
+            return FALSE;
+        }
+
+        foreach($arrItem as $key => $val)
+        {
+            if(mb_detect_encoding($val,array('ASCII','GB2312','GBK','UTF-8')) == 'ASCII')
+            {
+                $val = iconv('GBK','UTF-8//IGNORE',$val);
+            }
+            $arrItem[$key] = "{$key}='".trim($val)."'";
+        }
+
+        return ' '.implode(',',$arrItem).' ';
     }
 }

@@ -19,6 +19,7 @@ class DB
         try
         {
             $this->dbConnect = new PDO('mysql:host='.getConfig('mysqlHost').';dbname='.getConfig('mysqlDBName'), getConfig('mysqlAccount'), getConfig('mysqlPassword'));
+            $this->dbConnect->exec("set names utf8");
         }
         catch (PDOException $e)
         {
@@ -60,6 +61,4 @@ class DB
         }
         return $iResult;
     }
-
-
 }
