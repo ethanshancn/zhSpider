@@ -24,5 +24,4 @@ $xsrf = $loginClass->doLogin();
 
 defined('XSRF') || define('XSRF',$xsrf);
 
-$index = loadClass('userPage',array('url' => 'https://www.zhihu.com/people/excited-vczh/followees'));
-$index->startGet();
+$index = loadClass('userPage',array('url' => 'https://www.zhihu.com/people/ethan_shan/followees'));

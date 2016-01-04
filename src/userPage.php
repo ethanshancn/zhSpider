@@ -24,6 +24,8 @@ class userPage
             $this->hashId = $param['hashId'];
         }
         $this->dbModel = loadClass('DBModel');
+
+        $this->startGet();
     }
 
     public function startGet()
@@ -41,7 +43,7 @@ class userPage
         {
             //若未成功插入用户数据(包含插入失败以及用户已存在两种情况),则不进行如下操作
             $this->getUserAnswer($userInf['totalAnswer']);
-            //$this->getUserFollowee();
+            $this->getUserFollowee();
         }
 
     }
@@ -77,11 +79,16 @@ class userPage
             $userInfo['sDescription'] = (($tmp = $infoDiv->find("span.description",0)) && ($tmp2 = $tmp->firstChild())) ? $tmp2->getPlainText() : '';
             $userInfo['iAgree'] = (($tmp = $infoDiv->find("span.zm-profile-header-user-agree",0)) && ($tmp2 = $tmp->find("strong",0))) ? $tmp2->getPlainText() : '';
             $userInfo['iThanks'] = (($tmp = $infoDiv->find("span.zm-profile-header-user-thanks",0)) && ($tmp2 = $tmp->find("strong",0))) ? $tmp2->getPlainText() : '';
+            $userInfo['sAvater'] = ($tmp = $infoDiv->find("img.avatar",0)) ? $tmp->getAttr("src") : '';
+            $userInfo['sUniqueName'] = str_replace('/followees','',str_replace('https://www.zhihu.com/people/','',$this->webUrl));
 
             $arrReturn = $userInfo;
             $arrReturn['totalAnswer'] = (($tmp = $infoDiv->find("div.profile-navbar",0)->getChild(2)) && ($tmp2 = $tmp->find("span",0))) ? $tmp2->getPlainText() : 0;
 
             unset($infoDiv);
+
+            var_dump($userInfo);
+            die();
 
             $this->dbModel->addUserInf($userInfo);
             return $arrReturn;

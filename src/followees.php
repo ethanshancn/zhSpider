@@ -10,26 +10,29 @@ class followees
 {
     private $webUrl;
     private $curlObj;
+    private $hashId;
 
     public function __construct($param)
     {
-        $this->webUrl = ($param['url'] == NULL) ? 'https://www.zhihu.com/node/ProfileFolloweesListV2' : $param['url'];
-        $this->curlObj = loadClass('zhCurl');
-    }
-
-    public function startGet($hashId)
-    {
-        if(empty($hashId) || !is_string($hashId))
+        if(!$param['hashId'])
         {
             return FALSE;
         }
+        $this->webUrl = (isset($param['url']) && !empty($param['url'])) ? $param['url'] : 'https://www.zhihu.com/node/ProfileFolloweesListV2';
+        $this->hashId = $param['hashId'];
+        $this->curlObj = loadClass('zhCurl');
 
+        $this->startGet();
+    }
+
+    public function startGet()
+    {
         $defaultParam = array(
             'method' => 'next',
             'params' => array(
                 'offset'  => -20,
                 'order_by'=> 'created',
-                'hash_id' => $hashId
+                'hash_id' => $this->hashId
             ),
             '_xsrf'  => XSRF
         );
@@ -47,18 +50,15 @@ class followees
     public function getList($param)
     {
         $result = $this->curlObj->getWebPage($this->webUrl,array(CURLOPT_POSTFIELDS => $param));
-        $result = json_decode($result['content'],TRUE);
-
-        if(count($result) > 0)
+        $content = json_decode($result['content'],TRUE);
+        $webSite = loadClass('parserDom',$content);
+        $userList = $webSite->find("div.zm-profile-card");
+        unset($webSite);
+        foreach($userList as $val)
         {
-            return TRUE;
-        }
-        else
-        {
-            return FALSE;
+            $arrInf['hashId'] = $val->find("button.zm-rich-follow-btn",0)->getAttr("data-id");
+            $arrInf['url'] = $val->find("a.zg-link",0)->getAttr("href").'/followees';
+            loadClass('userPage',$arrInf);
         }
     }
-
-
-
 }
