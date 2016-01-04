@@ -16,7 +16,7 @@ class login
         $loginHtml = $curlObj->getWebPage($loginSite);
         $html = loadClass('parserDom',$loginHtml['content']);
         $xsrf = $html->find('input[name=_xsrf]',0)->getAttr('value');
-        $html->clear();
+        unset($html);
 
         //获取验证码并从CLI输入
         $captcha = "https://www.zhihu.com/captcha.gif?r=".time().rand(200,999);

@@ -68,7 +68,7 @@ class userPage
         $userInfo['sEmployment'] = ($tmp = $infoDiv->find("span.employment",0)) ? $tmp->getPlainText() : '';
         $userInfo['sPosition'] = ($tmp = $infoDiv->find("span.position",0)) ? $tmp->getPlainText() : '';
         $userInfo['sSignature'] = ($tmp = $infoDiv->find("span.bio",0)) ? $tmp->getPlainText() : '';
-        $userInfo['sDescription'] = ($tmp = $infoDiv->find("span.description",0) && $tmp2 = $tmp->firstChild()) ? $tmp2->getPlainText() : '';
+        $userInfo['sDescription'] = (($tmp = $infoDiv->find("span.description",0)) && ($tmp2 = $tmp->firstChild())) ? $tmp2->getPlainText() : '';
         $userInfo['iAgree'] = (($tmp = $infoDiv->find("span.zm-profile-header-user-agree",0)) && ($tmp2 = $tmp->find("strong",0))) ? $tmp2->getPlainText() : '';
         $userInfo['iThanks'] = (($tmp = $infoDiv->find("span.zm-profile-header-user-thanks",0)) && ($tmp2 = $tmp->find("strong",0))) ? $tmp2->getPlainText() : '';
 
