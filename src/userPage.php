@@ -37,6 +37,8 @@ class userPage
             return FALSE;
         }
 
+        $this->getUserInfo($result['content']);
+
         //$this->getUserFollowee();
         //$this->getUserAnswer();
 
@@ -44,23 +46,36 @@ class userPage
 
     public function getUserInfo($content)
     {
-        $webSite = loadClass('simple_html_dom');
-        $webSite->load($content);
+        $webSite = loadClass('parserDom',$content);
 
         //初始化hashId
         if(empty($this->hashId))
         {
-            $hashParam = $webSite->find("div[class=zh-general-list]",0)->getAttribute('data-init');
+            $hashParam = $webSite->find("div.zh-general-list",0)->getAttr('data-init');
             $hashParam = htmlspecialchars_decode($hashParam);
             $hashParam = json_decode($hashParam,TRUE);
             $this->hashId = $hashParam['params']['hash_id'];
         }
 
+        $userInfo = array();
+        $infoDiv = $webSite->find("div.zm-profile-header",0);
 
+        $userInfo['sUserName'] = ($tmp = $infoDiv->find("a.name",0))? $tmp->getPlainText() : '';
+        $userInfo['sHashId'] = $this->hashId;
+        $userInfo['sLocation'] = (($tmp = $infoDiv->find("span.location",0)) && ($tmp2 = $tmp->firstChild())) ? $tmp2->getPlainText() : '';
+        $userInfo['sBusiness'] = (($tmp = $infoDiv->find("span.business",0)) && ($tmp2 = $tmp->firstChild())) ? $tmp2->getPlainText() : '';
+        $userInfo['iSex'] = (strstr(((($tmp = $infoDiv->find("span.gender",0)) && ($tmp2 = $tmp->firstChild()))? $tmp2->getAttr("class") : 'male'),'female') === FALSE) ? 1 : 0;
+        $userInfo['sEmployment'] = ($tmp = $infoDiv->find("span.employment",0)) ? $tmp->getPlainText() : '';
+        $userInfo['sPosition'] = ($tmp = $infoDiv->find("span.position",0)) ? $tmp->getPlainText() : '';
+        $userInfo['sSignature'] = ($tmp = $infoDiv->find("span.bio",0)) ? $tmp->getPlainText() : '';
+        $userInfo['sDescription'] = ($tmp = $infoDiv->find("span.description",0) && $tmp2 = $tmp->firstChild()) ? $tmp2->getPlainText() : '';
+        $userInfo['iAgree'] = (($tmp = $infoDiv->find("span.zm-profile-header-user-agree",0)) && ($tmp2 = $tmp->find("strong",0))) ? $tmp2->getPlainText() : '';
+        $userInfo['iThanks'] = (($tmp = $infoDiv->find("span.zm-profile-header-user-thanks",0)) && ($tmp2 = $tmp->find("strong",0))) ? $tmp2->getPlainText() : '';
 
+        unset($infoDiv,$webSite);
 
+        print_r($userInfo);
 
-        $webSite->clear();
     }
 
     public function getUserAnswer()
@@ -72,7 +87,7 @@ class userPage
         /********************** 测试信息 ******************************/
 
         $userPage = substr($userPage,0,strrpos($userPage,'/') + 1).'answers';
-        $answer = new answers($userPage,$hashId,$totalAnswer);
+        $answer = loadClass('answer',array('answerUrl'=>$userPage,'hashId'=>$hashId,'totalAnswer'=>$totalAnswer));
 
     }
 

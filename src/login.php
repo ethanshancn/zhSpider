@@ -14,9 +14,8 @@ class login
         //获取登陆页
         $loginSite = "https://www.zhihu.com/";
         $loginHtml = $curlObj->getWebPage($loginSite);
-        $html = loadClass('simple_html_dom');
-        $html->load($loginHtml['content']);
-        $xsrf = $html->find('input[name=_xsrf]',0)->value;
+        $html = loadClass('parserDom',$loginHtml['content']);
+        $xsrf = $html->find('input[name=_xsrf]',0)->getAttr('value');
         $html->clear();
 
         //获取验证码并从CLI输入

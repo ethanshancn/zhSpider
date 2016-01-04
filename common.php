@@ -15,7 +15,7 @@
  */
 if(!function_exists('loadClass'))
 {
-    function &loadClass($class, $param = NULL)
+    function loadClass($class, $param = NULL)
     {
         static $commonClasses = array();
         if(isset($commonClasses[$class]))
