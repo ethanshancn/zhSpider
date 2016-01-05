@@ -104,8 +104,7 @@ class userPage
 
     public function getUserFollowee()
     {
-        $followees = loadClass('followees');
-        $followees->startGet($this->hashId);
+        $followees = loadClass('followees',array('hashId'=>$this->hashId));
     }
 
 }
