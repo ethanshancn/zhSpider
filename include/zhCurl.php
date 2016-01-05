@@ -51,8 +51,6 @@ class zhCurl
         }
         $arrOpt = $this->initOption(array(CURLOPT_URL => $webUrl) + $otherOpt);
 
-        print_r($arrOpt);
-
         curl_setopt_array($this->curlHandle,$arrOpt);
         $content = curl_exec( $this->curlHandle );
         $err     = curl_errno( $this->curlHandle );

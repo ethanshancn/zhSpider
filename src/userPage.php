@@ -87,9 +87,6 @@ class userPage
 
             unset($infoDiv);
 
-            var_dump($userInfo);
-            die();
-
             $this->dbModel->addUserInf($userInfo);
             return $arrReturn;
         }
