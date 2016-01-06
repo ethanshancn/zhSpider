@@ -51,14 +51,16 @@ class followees
     {
         $result = $this->curlObj->getWebPage($this->webUrl,array(CURLOPT_POSTFIELDS => $param));
         $content = json_decode($result['content'],TRUE);
-        $webSite = loadClass('parserDom',$content);
-        $userList = $webSite->find("div.zm-profile-card");
-        unset($webSite);
-        foreach($userList as $val)
+        if(!empty($content['msg']) && $content['r'] == 0)
         {
-            $arrInf['hashId'] = $val->find("button.zm-rich-follow-btn",0)->getAttr("data-id");
-            $arrInf['url'] = $val->find("a.zg-link",0)->getAttr("href").'/followees';
-            loadClass('userPage',$arrInf);
+            foreach($content['msg'] as $val)
+            {
+                $webSite = loadClass('parserDom',str_replace(PHP_EOL, '', $val));
+                $arrInf['hashId'] = $webSite->find("button.zm-rich-follow-btn",0)->getAttr("data-id");
+                $arrInf['url'] = $webSite->find("a.zg-link",0)->getAttr("href").'/followees';
+                unset($webSite);
+                loadClass('userPage',$arrInf);
+            }
         }
     }
 }
