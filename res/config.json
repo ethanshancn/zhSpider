@@ -6,5 +6,7 @@
   "mysqlPort" : 3306,
   "mysqlAccount" : "root",
   "mysqlPassword" : "123456",
-  "mysqlDBName" : "zhihu"
+  "mysqlDBName" : "zhihu",
+
+  "maxThreadNum" : 5
 }
