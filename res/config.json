@@ -1,6 +1,6 @@
 {
-  "zhAccount" : "416225984@qq.com",
-  "zhPassword": "WWWSGQCOM",
+  "zhAccount" : "zhihutest_1@163.com",
+  "zhPassword": "123456",
 
   "mysqlHost" : "127.0.0.1",
   "mysqlPort" : 3306,
