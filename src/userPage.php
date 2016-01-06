@@ -99,12 +99,12 @@ class userPage
     public function getUserAnswer($totalNum = 0)
     {
         $userPage = substr($this->webUrl,0,strrpos($this->webUrl,'/') + 1).'answers';
-        $answer = loadClass('answers',array('answerUrl'=>$userPage,'hashId'=>$this->hashId,'totalAnswer'=>$totalNum));
+        loadClass('answers',array('answerUrl'=>$userPage,'hashId'=>$this->hashId,'totalAnswer'=>$totalNum));
     }
 
     public function getUserFollowee()
     {
-        $followees = loadClass('followees',array('hashId'=>$this->hashId));
+        loadClass('followees',array('hashId'=>$this->hashId));
     }
 
 }
