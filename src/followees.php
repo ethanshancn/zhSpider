@@ -59,7 +59,8 @@ class followees
                 $arrInf['hashId'] = $webSite->find("button.zm-rich-follow-btn",0)->getAttr("data-id");
                 $arrInf['url'] = $webSite->find("a.zg-link",0)->getAttr("href").'/followees';
                 unset($webSite);
-                loadClass('userPage',$arrInf);
+                $dispatch = dispatching::getInstance();
+                $dispatch->addUser($arrInf['hashId'],$arrInf);
             }
         }
     }

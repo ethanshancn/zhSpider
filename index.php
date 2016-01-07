@@ -15,8 +15,11 @@ defined('RES_DIR')     || define('RES_DIR',WEB_ROOT.'/res');
 defined('CONFIG_FILE') || define('CONFIG_FILE',RES_DIR.'/config.json');
 //基础函数文件目录
 defined('COMMON_FILE') || define('COMMON_FILE',WEB_ROOT.'/common.php');
+//调度中心
+defined('DISPATCH_FILE') || define('DISPATCH_FILE',WEB_ROOT.'/dispatching.php');
 
 require_once COMMON_FILE;
+require_once DISPATCH_FILE;
 
 //登录并初始化XSRF常量
 $loginClass = loadClass('login');
