@@ -25,6 +25,9 @@ require_once DISPATCH_FILE;
 $loginClass = loadClass('login');
 $xsrf = $loginClass->doLogin();
 
+//线程资源池初始化
+dispatching::initPool();
+
 defined('XSRF') || define('XSRF',$xsrf);
 
 loadClass('userPage',array('url' => 'https://www.zhihu.com/people/ethan_zhtest/followees'));

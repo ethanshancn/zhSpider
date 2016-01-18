@@ -8,5 +8,5 @@
   "mysqlPassword" : "123456",
   "mysqlDBName" : "zhihu",
 
-  "maxThreadNum" : 5
+  "maxThreadNum" : 3
 }

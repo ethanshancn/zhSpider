@@ -5,81 +5,71 @@
  * CreateTime: 2016/1/6 20:53
  * Description: 线程调度器
  */
+
+/*
+ * 正在等待处理和正在处理中的人员名单,在检测人员是否已在名单中时必须先检测该名单然后再检测数据库
+ * 数组索引为sHashId,
+ * 值为需要传入userPage的参数
+ */
+$waiting = array();
+
+$handlingAndComplete = array();
+
 class dispatching
 {
-    //最多可同时进行的线程数
-    private $maxThreadNum;
-
-    private $pool = array();
+    private static $pool = array();
 
     /*
      * 正在等待处理和正在处理中的人员名单,在检测人员是否已在名单中时必须先检测该名单然后再检测数据库
      * 数组索引为sHashId,
      * 值为需要传入userPage的参数
      */
-    private static $waiting = array();
-
-    private static $handlingAndComplete = array();
-
-    private static $instance;
-
-    public static function getInstance($maxThreadNum = 0)
-    {
-        if(!(self::$instance instanceof self))
-        {
-            self::$instance = new self($maxThreadNum);
-        }
-        return self::$instance;
-    }
 
     public static function getNextUser()
     {
-        if(!(self::$instance instanceof self))
+
+        echo 'DELETE '.count($GLOBALS['waiting'])."\n";
+
+        return array();
+
+        /*if(count($GLOBALS['waiting']) > 0)
         {
-            self::getInstance();
-        }
-        if(count(self::$waiting) > 0)
-        {
-            $tmp = array_shift(self::$waiting);
-            self::$handlingAndComplete[$tmp['hashId']] = TRUE;
+            $tmp = array_shift($GLOBALS['waiting']);
+            $GLOBALS['handlingAndComplete'][$tmp['hashId']] = TRUE;
             return $tmp;
         }
         else
         {
             return array();
-        }
+        }*/
     }
 
-    public function addUser($userHashId, $param)
+    public static function addUser($userHashId, $param)
     {
         if(!$userHashId || !$param['url'])
         {
             //记录日志
 
+            echo "LOST PARAM\n";
+            print_r($param);
             return FALSE;
         }
-        if(!isset(self::$waiting[$userHashId]) && !isset(self::$handlingAndComplete[$userHashId]))
+        if(!isset($GLOBALS['waiting'][$userHashId]) && !isset($GLOBALS['handlingAndComplete'][$userHashId]))
         {
-            self::$waiting[$userHashId] = $param;
-
-            print_r(self::$waiting);
-
+            $GLOBALS['waiting'][$userHashId] = $param;
         }
+        echo "Add ".count($GLOBALS['waiting'])."\n";
     }
 
-    private function __construct($maxThreadNum = 0)
+    public static function initPool()
     {
-        $this->maxThreadNum = ($maxThreadNum <= 0)?getConfig('maxThreadNum') : $maxThreadNum;
-        $this->initPool();
-    }
+        $maxThreadNum = getConfig('maxThreadNum');
 
-    private function initPool()
-    {
-        for($i = 0; $i < $this->maxThreadNum; $i ++)
+        for($i = 0; $i < $maxThreadNum; $i ++)
         {
-            $this->pool[$i] = new handleUser();
-            $this->pool[$i]->start();
-            //每隔50毫秒初始化一个线程
+            self::$pool[$i] = new handleUser();
+            self::$pool[$i]->start();
+            //每隔100毫秒初始化一个线程
             usleep(50);
         }
     }
@@ -93,15 +83,25 @@ class handleUser extends Thread
     {
         while(1)
         {
+            echo "Start Loop\n";
             //若为空则尝试自动获取
-            if(empty($this->userPageParam) || !isset($this->userPageParam['url']) || empty($this->userPageParam['url']))
+            if(count($this->userPageParam) <= 0 || !isset($this->userPageParam['url']))
             {
+                echo "Start Loop2\n";
                 $this->userPageParam = dispatching::getNextUser();
             }
-            if(!empty($this->userPageParam))
+            if(count($this->userPageParam) > 0)
             {
-                loadClass('userPage',$this->userPageParam);
+                echo "Start Loop3\n";
+                print_r($this->userPageParam);
                 $this->userPageParam = array();
+                /*echo microtime()." Handle user {$this->userPageParam['hashId']}\n";
+                print_r($this->userPageParam);
+                echo "\n";
+                $this->userPageParam = array();*/
+
+                /*loadClass('userPage',$this->userPageParam);
+                $this->userPageParam = array();*/
             }
             sleep(1);
         }
