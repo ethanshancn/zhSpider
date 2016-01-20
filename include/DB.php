@@ -3,11 +3,13 @@
  * DB.php
  * Author: Ethan
  * CreateTime: 2015/12/17 11:43
- * Description: 数据库相关封装(目前较弱，临时封装)
+ * Description: 数据库相关封装(临时封装)
  */
 class DB
 {
     public $dbConnect;
+
+    public $redisConnect;
 
     public function __construct()
     {
@@ -18,8 +20,13 @@ class DB
     {
         try
         {
+            //连接Mysql
             $this->dbConnect = new PDO('mysql:host='.getConfig('mysqlHost').';dbname='.getConfig('mysqlDBName'), getConfig('mysqlAccount'), getConfig('mysqlPassword'));
             $this->dbConnect->exec("set names utf8");
+
+            //连接Redis
+            $this->redisConnect = new Redis();
+            $this->redisConnect->connect(getConfig('redisHost',getConfig('redisPort')));
         }
         catch (PDOException $e)
         {

@@ -11,6 +11,7 @@ class followees
     private $webUrl;
     private $curlObj;
     private $hashId;
+    private $dbModel;
 
     public function __construct($param)
     {
@@ -21,6 +22,7 @@ class followees
         $this->webUrl = (isset($param['url']) && !empty($param['url'])) ? $param['url'] : 'https://www.zhihu.com/node/ProfileFolloweesListV2';
         $this->hashId = $param['hashId'];
         $this->curlObj = loadClass('zhCurl');
+        $this->dbModel = loadClass('DBModel');
 
         $this->startGet();
     }
@@ -60,7 +62,7 @@ class followees
                 $arrInf['url'] = $webSite->find("a.zg-link",0)->getAttr("href").'/followees';
                 unset($webSite);
 
-                dispatching::addUser($arrInf['hashId'],$arrInf);
+                $this->dbModel->addWait($arrInf['hashId'],$arrInf);
             }
         }
     }

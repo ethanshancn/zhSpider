@@ -6,60 +6,9 @@
  * Description: 线程调度器
  */
 
-/*
- * 正在等待处理和正在处理中的人员名单,在检测人员是否已在名单中时必须先检测该名单然后再检测数据库
- * 数组索引为sHashId,
- * 值为需要传入userPage的参数
- */
-$waiting = array();
-
-$handlingAndComplete = array();
-
 class dispatching
 {
     private static $pool = array();
-
-    /*
-     * 正在等待处理和正在处理中的人员名单,在检测人员是否已在名单中时必须先检测该名单然后再检测数据库
-     * 数组索引为sHashId,
-     * 值为需要传入userPage的参数
-     */
-
-    public static function getNextUser()
-    {
-
-        echo 'DELETE '.count($GLOBALS['waiting'])."\n";
-
-        return array();
-
-        /*if(count($GLOBALS['waiting']) > 0)
-        {
-            $tmp = array_shift($GLOBALS['waiting']);
-            $GLOBALS['handlingAndComplete'][$tmp['hashId']] = TRUE;
-            return $tmp;
-        }
-        else
-        {
-            return array();
-        }*/
-    }
-
-    public static function addUser($userHashId, $param)
-    {
-        if(!$userHashId || !$param['url'])
-        {
-            //记录日志
-
-            echo "LOST PARAM\n";
-            print_r($param);
-            return FALSE;
-        }
-        if(!isset($GLOBALS['waiting'][$userHashId]) && !isset($GLOBALS['handlingAndComplete'][$userHashId]))
-        {
-            $GLOBALS['waiting'][$userHashId] = $param;
-        }
-        echo "Add ".count($GLOBALS['waiting'])."\n";
-    }
 
     public static function initPool()
     {
@@ -81,6 +30,7 @@ class handleUser extends Thread
 
     public function run()
     {
+        $dbModel = loadClass('DBModel');
         while(1)
         {
             echo "Start Loop\n";
@@ -88,9 +38,9 @@ class handleUser extends Thread
             if(count($this->userPageParam) <= 0 || !isset($this->userPageParam['url']))
             {
                 echo "Start Loop2\n";
-                $this->userPageParam = dispatching::getNextUser();
+                $this->userPageParam = $dbModel->getNext();
             }
-            if(count($this->userPageParam) > 0)
+            if(is_array($this->userPageParam) && count($this->userPageParam) > 0)
             {
                 echo "Start Loop3\n";
                 print_r($this->userPageParam);

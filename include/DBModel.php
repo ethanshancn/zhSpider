@@ -9,9 +9,12 @@ class DBModel
 {
     private $dbConnect;
 
+    private $redisConnect;
+
     public function __construct()
     {
         $this->dbConnect = loadClass('DB');
+        $this->redisConnect = $this->dbConnect->redisConnect;
     }
 
     public function addUserInf($arrUserInf)
@@ -118,4 +121,33 @@ class DBModel
             return FALSE;
         }
     }
+
+    //增加等待获取信息的用户(等待集合:userWaitSet;等待hash表:userWaitMap;进行和完成集合：handlingAndCompleteSet)
+    public function addWait($hashId,$arrUserParam)
+    {
+        if(!$this->redisConnect->sIsMember('userWaitSet',$hashId) && !$this->redisConnect->hExists('userWaitMap',$hashId) && !$this->redisConnect->sIsMember('handlingAndCompleteSet',$hashId))
+        {
+            $this->redisConnect->multi()
+                ->sAdd('userWaitSet',$hashId)
+                ->hSet('userWaitMap',$hashId,json_encode($arrUserParam))
+                ->exec();
+        }
+    }
+
+    //获取下一个用户信息
+    public function getNext()
+    {
+        if($this->redisConnect->sCard('userWaitSet') > 0)
+        {
+            $hashId = $this->redisConnect->sPop('userWaitSet');
+            $arrReturn = $this->redisConnect->multi()
+                ->hGet('userWaitMap',$hashId)
+                ->sAdd('handlingAndCompleteSet',$hashId)
+                ->hDel('userWaitMap',$hashId)
+                ->exec();
+            return json_decode($arrReturn[0],TRUE);
+        }
+        return NULL;
+    }
+
 }
