@@ -8,5 +8,8 @@
   "mysqlPassword" : "123456",
   "mysqlDBName" : "zhihu",
 
+  "redisHost" : "127.0.0.1",
+  "redisPort" : 3309,
+
   "maxThreadNum" : 3
 }
