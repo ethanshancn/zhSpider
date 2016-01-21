@@ -42,8 +42,8 @@ class userPage
         if($userInf = $this->getUserInfo($result['content']))
         {
             //若未成功插入用户数据(包含插入失败以及用户已存在两种情况),则不进行如下操作
-            $this->getUserAnswer($userInf['totalAnswer']);
             $this->getUserFollowee();
+            $this->getUserAnswer($userInf['totalAnswer']);
         }
 
     }
