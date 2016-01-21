@@ -26,7 +26,7 @@ class DB
 
             //连接Redis
             $this->redisConnect = new Redis();
-            $this->redisConnect->connect(getConfig('redisHost',getConfig('redisPort')));
+            $this->redisConnect->connect(getConfig('redisHost'),getConfig('redisPort'));
         }
         catch (PDOException $e)
         {
