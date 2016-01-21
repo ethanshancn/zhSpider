@@ -64,6 +64,11 @@ class followees
 
                 $this->dbModel->addWait($arrInf['hashId'],$arrInf);
             }
+            return TRUE;
+        }
+        else
+        {
+            return FALSE;
         }
     }
 }

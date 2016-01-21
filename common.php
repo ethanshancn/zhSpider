@@ -24,7 +24,7 @@ if(!function_exists('loadClass'))
             exit(-3);
         }
         static $commonClasses = array();
-        if(isset($commonClasses[$class]))
+        if(isset($commonClasses[$class]) && $commonClasses[$class] instanceof $class)
         {
             return $commonClasses[$class];
         }
