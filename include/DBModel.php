@@ -47,7 +47,7 @@ class DBModel
         if(!is_string($sHashId))
         {
             //记录日志
-
+            logMsg(SL_ERROR,"参数错误!");
             echo "参数错误\n";
             exit(-3);
         }
@@ -105,8 +105,7 @@ class DBModel
     {
         if(!is_string($sHashId) || !$iAnswerId)
         {
-            //记录日志
-
+            logMsg(SL_ERROR,"参数错误!");
             echo "参数错误\n";
             exit(-3);
         }

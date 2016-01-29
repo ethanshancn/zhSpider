@@ -33,7 +33,6 @@ class handleUser extends Thread
         $userPageParam = array();
         while(1)
         {
-            //echo "Start Loop\n";
             //若为空则尝试自动获取
             if(count($userPageParam) <= 0 || !isset($userPageParam['url']))
             {
@@ -41,7 +40,7 @@ class handleUser extends Thread
             }
             if(is_array($userPageParam) && count($userPageParam) > 0)
             {
-                echo "Start Loop3 ".microtime()."\n";
+                logMsg(SL_DEBUG,"Start to handle user : ".json_encode($userPageParam));
                 loadClass('userPage',$userPageParam);
                 $userPageParam = array();
             }

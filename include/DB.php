@@ -30,8 +30,6 @@ class DB
         }
         catch (PDOException $e)
         {
-            //记录日志
-
             echo $e->getMessage()."\n";
             exit(-3);
         }
@@ -45,13 +43,12 @@ class DB
         }
         catch (PDOException $e)
         {
-            //记录日志
-
+            logMsg(SL_ERROR,"SQL failed : ".$e->getMessage());
             echo $e->getMessage()."\n";
             exit(-3);
         }
 
-        return $arrResult->fetchAll(PDO::FETCH_ASSOC);
+        return $arrResult? $arrResult->fetchAll(PDO::FETCH_ASSOC) : array();
     }
 
     public function exec($strSql)
@@ -62,8 +59,7 @@ class DB
         }
         catch (PDOException $e)
         {
-            //记录日志
-
+            logMsg(SL_ERROR,"SQL failed : ".$e->getMessage());
             echo $e->getMessage()."\n";
             exit(-3);
         }

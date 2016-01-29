@@ -19,8 +19,7 @@ if(!function_exists('loadClass'))
     {
         if(!is_string($class))
         {
-            //日志记录
-
+            logMsg(SL_ERROR,"参数错误!");
             exit(-3);
         }
         static $commonClasses = array();
@@ -174,5 +173,21 @@ if(!function_exists('buildUpdateSql'))
         }
 
         return ' '.implode(',',$arrItem).' ';
+    }
+}
+
+/*
+ * 判断是否已加载该类所在文件
+ *
+ * @param int  错误等级（SL_DEBUG:正常debug记录;SL_ERROR:错误输出记录）
+ * @return boolean
+ */
+if(!function_exists('logMsg'))
+{
+    function logMsg($iLevel,$sInfo)
+    {
+        $commonLog = loadClass('log');
+        $arrInfo = debug_backtrace();
+        $commonLog->addLog($iLevel,$sInfo,$arrInfo[0]['file'].':'.$arrInfo[0]['line']);
     }
 }

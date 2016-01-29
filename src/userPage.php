@@ -34,8 +34,7 @@ class userPage
         $result = $this->curlObj->getWebPage($this->webUrl,array(CURLOPT_HTTPGET => TRUE));
         if($result['errno'] != 0)
         {
-            //打印日志
-
+            logMsg(SL_ERROR,"GET user page failed : {$this->webUrl}");
             return FALSE;
         }
 

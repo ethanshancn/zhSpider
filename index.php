@@ -11,6 +11,9 @@ defined('INCLUDE_DIR') || define('INCLUDE_DIR',WEB_ROOT.'/include');
 defined('SRC_DIR')     || define('SRC_DIR',WEB_ROOT.'/src');
 defined('RES_DIR')     || define('RES_DIR',WEB_ROOT.'/res');
 
+defined('SL_DEBUG')   || define('SL_DEBUG',1);
+defined('SL_ERROR')   || define('SL_ERROR',2);
+
 //配置文件目录
 defined('CONFIG_FILE') || define('CONFIG_FILE',RES_DIR.'/config.json');
 //基础函数文件目录

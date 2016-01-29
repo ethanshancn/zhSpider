@@ -17,8 +17,6 @@ class config
         }
         else
         {
-            //记录日志
-
             exit(-3);
         }
     }
@@ -40,7 +38,7 @@ class config
         if(!is_string($key) || !is_string($val))
         {
             //记录日志
-
+            logMsg(SL_ERROR,"参数错误!");
             return FALSE;
         }
         $this->arrConfig[$key] = $val;
