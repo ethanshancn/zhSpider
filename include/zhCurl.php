@@ -50,7 +50,6 @@ class zhCurl
             $otherOpt = array();
         }
 
-        logMsg(SL_DEBUG,"CURL请求:{$webUrl}");
         $arrOpt = $this->initOption(array(CURLOPT_URL => $webUrl) + $otherOpt);
         curl_setopt_array($this->curlHandle,$arrOpt);
         $content = curl_exec( $this->curlHandle );

@@ -17,7 +17,8 @@ class dispatching
         for($i = 0; $i < $maxThreadNum; $i ++)
         {
             self::$pool[$i] = new handleUser();
-            self::$pool[$i]->start();
+            self::$pool[$i]->start(PTHREADS_INHERIT_ALL | PTHREADS_ALLOW_GLOBALS);
+            self::$pool[$i]->join();
             //每隔50毫秒初始化一个线程
             usleep(50);
         }
