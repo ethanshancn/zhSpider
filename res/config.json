@@ -11,7 +11,7 @@
   "redisHost" : "127.0.0.1",
   "redisPort" : 3309,
 
-  "maxThreadNum" : 5,
+  "maxThreadNum" : 500,
 
   "maxLogDays" : 10
 }
